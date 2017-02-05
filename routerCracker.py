@@ -1,5 +1,7 @@
 # coding=utf-8
 
+import requests
+import json
 __author__ = 'quinnpan'
 
 
@@ -33,11 +35,78 @@ def seurityEncode(password):
 
 
 def main():
+    password = '1234'
     pwd1 = seurityEncode('1234')
     print(pwd1)
     pwd1 = seurityEncode('1111')
     print(pwd1)
+    encryptPwd = seurityEncode(password)
+    print(encryptPwd)
+    url = 'http://192.168.1.1/'
+    headers = {'Content-Type': 'application/json; charset=UTF-8'}
+    payload = '{"method":"do","login":{"password":"%s"}}' % encryptPwd
+    response = requests.post(url, data=payload, headers=headers)
+    stok = json.loads(response.text)['stok']
 
 
 if __name__ == '__main__':
     main()
+
+
+def getNetInfo():
+    '''
+    获取数据代码：
+stok = json.loads(response.text)['stok']
+headers = {'Content-Type': 'application/json; charset=UTF-8'}
+url = '%sstok=%s/ds' % ('http://192.168.1.1/',stok)
+payload = '{"hosts_info":{"table":"host_info"},"method":"get"}'
+response = requests.post(url, data=payload, headers=headers)
+​
+
+返回的 JSON 数据：
+
+{
+    "hosts_info": {
+        "host_info": [
+            {
+                "host_info_1": {
+                    "mac": "D4-45-9D-62-8E-2D",
+                    "up_speed": "45773",
+                    "ssid": "",
+                    "plan_rule": [],
+                    "ip": "192.168.1.100",
+                    "type": "0",
+                    "is_cur_host": "0",
+                    "cfg_valid": "1",
+                    "blocked": "0",
+                    "down_limit": "0",
+                    "down_speed": "808",
+                    "hostname": "hehe",
+                    "up_limit": "0"
+                }
+            },
+            {
+                "host_info_2": {
+                    "mac": "5A-54-33-0C-92-2D",
+                    "up_speed": "59",
+                    "ssid": "aaa",
+                    "plan_rule": [],
+                    "wifi_mode": "0",
+                    "ip": "192.168.1.98",
+                    "type": "1",
+                    "is_cur_host": "1",
+                    "cfg_valid": "1",
+                    "blocked": "0",
+                    "down_limit": "0",
+                    "down_speed": "70",
+                    "hostname": "HaHa",
+                    "up_limit": "0"
+                }
+            }
+        ]
+    },
+    "error_code": 0
+}
+
+    :return:
+    '''
